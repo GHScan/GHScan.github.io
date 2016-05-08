@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>Scan的轮子工坊</title>
-  <subtitle>记踩过的坑和不成熟的想法</subtitle>
+  <title>Scan的博客</title>
+  <subtitle>上士闻道，勤而行之</subtitle>
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.wbscan.com/"/>
-  <updated>2016-05-08T01:24:14.460Z</updated>
+  <updated>2016-05-08T10:16:20.161Z</updated>
   <id>http://blog.wbscan.com/</id>
   
   <author>
@@ -16,14 +16,14 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>Structured Exception Handling</title>
+    <title>Windows中的结构化异常处理</title>
     <link href="http://blog.wbscan.com/2016/05/08/StructuredExceptionHandling/"/>
     <id>http://blog.wbscan.com/2016/05/08/StructuredExceptionHandling/</id>
     <published>2016-05-07T21:33:42.000Z</published>
-    <updated>2016-05-08T01:24:14.460Z</updated>
+    <updated>2016-05-08T10:16:20.161Z</updated>
     
-    <content type="html">&lt;h3 id=&quot;背景&quot;&gt;&lt;a href=&quot;#背景&quot; class=&quot;headerlink&quot; title=&quot;背景&quot;&gt;&lt;/a&gt;背景&lt;/h3&gt;&lt;p&gt;上一次在 Windows 上用 C/C++ 做正经项目、需要做严格的异常处理和调试的，已经是 5 年前了，那时我还是端游的引擎程序员。&lt;br&gt;&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;&lt;br&gt;在那以后，经历了移动开发乃至现在用 C# 做开发，都不需要跟 Windows 的结构化异常处理 (&lt;a href=&quot;https://zh.wikipedia.org/zh/%E7%BB%93%E6%9E%84%E5%8C%96%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;SEH&lt;/a&gt;) 打交道。&lt;br&gt;虽说用不上，但看技术文档总有可能碰上，正好最近就遇到这样的场合，显然我已经把 &lt;a href=&quot;https://book.douban.com/subject/3235659/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;《Windows核心编程》&lt;/a&gt; 里的细节给忘光光了，只好重新学习下。&lt;/p&gt;
-&lt;h3 id=&quot;SEH的概念&quot;&gt;&lt;a href=&quot;#SEH的概念&quot; class=&quot;headerlink&quot; title=&quot;SEH的概念&quot;&gt;&lt;/a&gt;SEH的概念&lt;/h3&gt;&lt;p&gt;把 MSDN 上的&lt;a href=&quot;https://msdn.microsoft.com/en-us/library/windows/desktop/ms680657%28v=vs.85%29.aspx&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;文档&lt;/a&gt; 读了过后，发现最有价值的，其实只是&lt;a href=&quot;https://msdn.microsoft.com/en-us/library/windows/desktop/ms679270%28v=vs.85%29.aspx&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;这块儿&lt;/a&gt;。&lt;/p&gt;
+    <content type="html">&lt;h3 id=&quot;背景&quot;&gt;&lt;a href=&quot;#背景&quot; class=&quot;headerlink&quot; title=&quot;背景&quot;&gt;&lt;/a&gt;背景&lt;/h3&gt;&lt;p&gt;上一次在 Windows 上用 C/C++ 做正经项目、需要做严格异常处理和调试的场合，已经是 5 年前了，那时我还在维护 PC 端游戏引擎。&lt;br&gt;&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;&lt;br&gt;在那以后，经历了移动开发到现在的 C# 开发，都不需要再跟 Windows 的结构化异常处理 (&lt;a href=&quot;https://zh.wikipedia.org/zh/%E7%BB%93%E6%9E%84%E5%8C%96%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;SEH&lt;/a&gt;) 打交道。&lt;br&gt;虽说用不上，但看技术文档总有可能碰上，正好最近就有这样的场合，显然我已经把 &lt;a href=&quot;https://book.douban.com/subject/3235659/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;《Windows核心编程》&lt;/a&gt; 里的细节给忘光光了，只能重新学习下。&lt;/p&gt;
+&lt;h3 id=&quot;SEH的概念&quot;&gt;&lt;a href=&quot;#SEH的概念&quot; class=&quot;headerlink&quot; title=&quot;SEH的概念&quot;&gt;&lt;/a&gt;SEH的概念&lt;/h3&gt;&lt;p&gt;把 MSDN 上的&lt;a href=&quot;https://msdn.microsoft.com/en-us/library/windows/desktop/ms680657%28v=vs.85%29.aspx&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;文档&lt;/a&gt; 读了过后，发现最有价值的，还是&lt;a href=&quot;https://msdn.microsoft.com/en-us/library/windows/desktop/ms679270%28v=vs.85%29.aspx&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;这里&lt;/a&gt;。&lt;/p&gt;
 &lt;p&gt;首先，Windows 的 SEH 整个脉络是这样的：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Exception Triggering&lt;ul&gt;
@@ -38,7 +38,7 @@
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;就是分别对应异常触发和异常处理，而在编程层面讲，上面的功能需要藉由以下关键字或者函数来实施：(和上面一一对应)&lt;/p&gt;
+&lt;p&gt;分为异常触发和异常处理，而在编程层面讲，上面的功能需要藉由以下关键字或者函数来实施：(和上面一一对应)&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Exception Triggering&lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;https://msdn.microsoft.com/en-us/library/windows/desktop/ms679270%28v=vs.85%29.aspx&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;__try&lt;/a&gt; block&lt;/li&gt;
@@ -52,7 +52,7 @@
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;h3 id=&quot;SEH的原理&quot;&gt;&lt;a href=&quot;#SEH的原理&quot; class=&quot;headerlink&quot; title=&quot;SEH的原理&quot;&gt;&lt;/a&gt;SEH的原理&lt;/h3&gt;&lt;p&gt;假设我们有一系列的函数，一层层的 Call 进去，每一个 Callsite ，都位于 Caller 的 __try block  中。那么，当最内层的一个函数调用 RaiseException 来抛出一个软件异常、或者在除零/非法内存访问抛出硬件异常的情况下，会发生这些事：&lt;/p&gt;
+&lt;h3 id=&quot;SEH原理&quot;&gt;&lt;a href=&quot;#SEH原理&quot; class=&quot;headerlink&quot; title=&quot;SEH原理&quot;&gt;&lt;/a&gt;SEH原理&lt;/h3&gt;&lt;p&gt;假设给定一个 Call stack，每一个 Callsite ，都位于 Caller 的 __try block  中。那么，当最内层的一个函数调用 RaiseException 来抛出一个软件异常、或者在除零/非法内存访问抛出硬件异常的情形下，会发生这些事：&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;当执行流进入一个函数的 &lt;strong&gt;try block 时，会把 &lt;/strong&gt;except 的filtering expression (也就是 &lt;strong&gt;except 的条件，在支持异常处理的高级语言中，对应 catch(e) 中的e )、handling block、以及 &lt;/strong&gt;finally block 这三个程序块儿的地址 push 到一个 thread local 的链表头上，从而将所有栈上 frame 的 exception handling 逻辑块串成一个链表&lt;/li&gt;
 &lt;li&gt;当 Call stack 的栈顶上触发一次异常时，无论是软件异常还是硬件异常，OS 先准备异常码(GetExceptionCode 的返回值)和调用上下文 (包括当前线程的各种寄存器，即 GetExceptionInformation 的返回值)，然后以他们为参数 (除非用户在filter中完全没有访问这些信息)，逐个调用 thread local 的异常处理链中的 filter，检测每个 filter 的返回值，决定下一步行为。此时，filter 可以返回三种结果，来影响异常处理流程：&lt;ul&gt;
@@ -78,7 +78,7 @@
  &lt;figure class=&quot;highlight c&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;19&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;20&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;21&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;22&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;23&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;24&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;25&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;26&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;27&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;28&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;29&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;30&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;31&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;32&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;33&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;34&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;35&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;36&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;37&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;38&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;39&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;40&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;41&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;42&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;static&lt;/span&gt; LONG NTAPI &lt;span class=&quot;title&quot;&gt;MyFramedFilter&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(_EXCEPTION_POINTERS *ExceptionInfo)&lt;/span&gt; &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;built_in&quot;&gt;puts&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&quot;1&quot;&lt;/span&gt;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    return EXCEPTION_CONTINUE_SEARCH;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;static&lt;/span&gt; LONG NTAPI &lt;span class=&quot;title&quot;&gt;MyTopLevelFilter&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(_EXCEPTION_POINTERS *ExceptionInfo)&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;built_in&quot;&gt;puts&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&quot;2&quot;&lt;/span&gt;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    return EXCEPTION_EXECUTE_HANDLER;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;Func2&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;()&lt;/span&gt; &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    __try &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        *&lt;span class=&quot;keyword&quot;&gt;reinterpret_cast&lt;/span&gt;&amp;lt;&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt;*&amp;gt;(&lt;span class=&quot;literal&quot;&gt;nullptr&lt;/span&gt;) = &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    __finally &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;built_in&quot;&gt;puts&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&quot;3&quot;&lt;/span&gt;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;Func1&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;()&lt;/span&gt; &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    __try &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        Func2();&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#125; &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    __except (MyFramedFilter(GetExceptionInformation())) &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;built_in&quot;&gt;puts&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&quot;never&quot;&lt;/span&gt;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;built_in&quot;&gt;puts&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&quot;never&quot;&lt;/span&gt;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;()&lt;/span&gt; &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    SetUnhandledExceptionFilter(MyTopLevelFilter);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    Func1();&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;h3 id=&quot;对比高级语言的异常&quot;&gt;&lt;a href=&quot;#对比高级语言的异常&quot; class=&quot;headerlink&quot; title=&quot;对比高级语言的异常&quot;&gt;&lt;/a&gt;对比高级语言的异常&lt;/h3&gt;&lt;p&gt;相比高级语言中的 try/catch/finally ， Windows 的 SEG 多了这些优点：&lt;/p&gt;
+&lt;h3 id=&quot;对比高级语言的异常&quot;&gt;&lt;a href=&quot;#对比高级语言的异常&quot; class=&quot;headerlink&quot; title=&quot;对比高级语言的异常&quot;&gt;&lt;/a&gt;对比高级语言的异常&lt;/h3&gt;&lt;p&gt;相比高级语言中的 try/catch/finally ， Windows 的 SEH 多了这些优点：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;能够捕获非法内存访问等硬件异常 (EXCEPTION_INT_DIVIDE_BY_ZERO, EXCEPTION_INT_OVERFLOW, EXCEPTION_ACCESS_VIOLATION)。&lt;/li&gt;
 &lt;li&gt;可以从异常触发点继续执行 (EXCEPTION_CONTINUE_EXECUTION)。&lt;/li&gt;
@@ -92,12 +92,12 @@
 &lt;li&gt;特定于 Windows 平台。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3 id=&quot;结语&quot;&gt;&lt;a href=&quot;#结语&quot; class=&quot;headerlink&quot; title=&quot;结语&quot;&gt;&lt;/a&gt;结语&lt;/h3&gt;&lt;p&gt;这是一篇即使放到10年前都不算新的文章，写它，更算是把我学习的结果记下来，以及刻意的丰富下博客内容吧。&lt;/p&gt;
-&lt;p&gt;就这篇文章讨论的这个话题而言，还是再推荐下 &lt;a href=&quot;https://book.douban.com/subject/3235659/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Windows核心编程&lt;/a&gt; 。&lt;br&gt;尽管我这次没看，但 Jeffrey 的书总是深入浅出，令人爱不释手。(过段时间我应该会看他的 &lt;a href=&quot;https://book.douban.com/subject/4112979/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;CLR via C#&lt;/a&gt; )&lt;/p&gt;
+&lt;p&gt;就这篇文章讨论的这个话题而言，还是再推荐下 &lt;a href=&quot;https://book.douban.com/subject/3235659/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Windows核心编程&lt;/a&gt; 。尽管这次我没看这本书，但 Jeffrey 的书总是深入浅出、鞭辟入里。我认为进入一个新领域时，如果正好有他的书，那一定是从入门到进阶的好机会。比如，学习 .Net 就推荐他的 &lt;a href=&quot;https://book.douban.com/subject/4112979/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;CLR via C#&lt;/a&gt;。&lt;/p&gt;
 </content>
     
     <summary type="html">
     
-      &lt;h3 id=&quot;背景&quot;&gt;&lt;a href=&quot;#背景&quot; class=&quot;headerlink&quot; title=&quot;背景&quot;&gt;&lt;/a&gt;背景&lt;/h3&gt;&lt;p&gt;上一次在 Windows 上用 C/C++ 做正经项目、需要做严格的异常处理和调试的，已经是 5 年前了，那时我还是端游的引擎程序员。&lt;br&gt;
+      &lt;h3 id=&quot;背景&quot;&gt;&lt;a href=&quot;#背景&quot; class=&quot;headerlink&quot; title=&quot;背景&quot;&gt;&lt;/a&gt;背景&lt;/h3&gt;&lt;p&gt;上一次在 Windows 上用 C/C++ 做正经项目、需要做严格异常处理和调试的场合，已经是 5 年前了，那时我还在维护 PC 端游戏引擎。&lt;br&gt;
     
     </summary>
     
@@ -115,32 +115,31 @@
   </entry>
   
   <entry>
-    <title>讲下怎么用Hexo+NexT搭这个博客</title>
+    <title>怎么用GithubPages+Hexo+NexT搭建博客</title>
     <link href="http://blog.wbscan.com/2016/05/08/HowToSetupTheHexoBasedBlog/"/>
     <id>http://blog.wbscan.com/2016/05/08/HowToSetupTheHexoBasedBlog/</id>
     <published>2016-05-07T20:15:18.000Z</published>
-    <updated>2016-05-07T21:13:56.670Z</updated>
+    <updated>2016-05-08T10:06:03.505Z</updated>
     
-    <content type="html">&lt;p&gt;我自己想搭博客很久了，之前是不会 Web 编程；后来终于学会做网站，但仍然嫌麻烦不想自己做博客。&lt;br&gt;&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;&lt;br&gt;考虑到，文章的托管和备份一定要靠谱，一番考察，还是觉得用 &lt;a href=&quot;https://pages.github.com/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;GitHub Pages&lt;/a&gt; 最省事；而基于 GitHub Pages 的静态网站方案中，对比&lt;a href=&quot;https://jekyllrb.com/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Jekyll&lt;/a&gt; 和 &lt;a href=&quot;https://hexo.io/docs/writing.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Hexo&lt;/a&gt; ，后者诞生得晚、活跃的主题多，安装和部署都更简单。在 Hexo 的主题中，&lt;a href=&quot;http://theme-next.iissnan.com/tag-plugins.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;NexT&lt;/a&gt; (&lt;a href=&quot;http://notes.iissnan.com/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Demo&lt;/a&gt;)又比所有的竞争对手的成熟度都要高一个档次，于是最终方案就是 GitHub Pages + Hexo + NexT. &lt;/p&gt;
-&lt;p&gt;我自己看了多少乱七八糟的教程和主题按下不表，这是推荐路线：&lt;/p&gt;
+    <content type="html">&lt;p&gt;我想自己搭博客很久了，之前是不会 Web，等到终于会做网站的时候，已经嫌麻烦不太想弄了，所以转而寻求现成的博客生成、托管方案。&lt;br&gt;&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;&lt;br&gt;考虑到，博客托管和文章备份一定要靠谱，一番考察，还是 &lt;a href=&quot;https://pages.github.com/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;GitHub Pages&lt;/a&gt; 最省事；而基于 GitHub Pages 的静态网站方案中，对比&lt;a href=&quot;https://jekyllrb.com/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Jekyll&lt;/a&gt; 和 &lt;a href=&quot;https://hexo.io/docs/writing.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Hexo&lt;/a&gt; ，后者诞生得晚、活跃的主题/插件多，安装和部署都更简单。在 Hexo 主题中，&lt;a href=&quot;http://theme-next.iissnan.com/tag-plugins.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;NexT&lt;/a&gt; (&lt;a href=&quot;http://notes.iissnan.com/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Demo&lt;/a&gt;)又比绝大部分竞争对手更成熟，于是最终方案就是 GitHub Pages + Hexo + NexT. &lt;/p&gt;
+&lt;p&gt;在考察各种教程和主题后，这是我的实施过程：&lt;/p&gt;
 &lt;ol&gt;
-&lt;li&gt;先看&lt;a href=&quot;https://pages.github.com/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;GitHub Pages&lt;/a&gt;的文档，至少用它托管一个空的 index.html  。成功过后，你就能通过&lt;code&gt;http://username.github.io&lt;/code&gt;来访问这个只有空的 index.html 页面的静态网站了。&lt;/li&gt;
-&lt;li&gt;注册一个域名，添加 CNAME record 重定向到你刚生成的由 GitHub 托管的网站。另外在 Repo 中也需要做点事： &lt;a href=&quot;https://help.github.com/articles/using-a-custom-domain-with-github-pages/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Using a custom domain with GitHub Pages&lt;/a&gt;。&lt;/li&gt;
-&lt;li&gt;在&lt;a href=&quot;https://hexo.io/docs/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Hexo&lt;/a&gt;了解一下这个静态博客生成器，然后按照 Doc 在本机初始化一个博客。此时如果你运行 hexo 命令，在这个初始博客模板上生成静态网站，push 到前面创建的 GitHub Pages 的 Repo 的话，那其实一个简陋的博客已经完工了，以后每次发新文章，直接&lt;code&gt;hexo new &amp;quot;post_name&amp;quot;&lt;/code&gt;就可以了。这篇教程写得很好：&lt;a href=&quot;https://xuanwo.org/2015/03/26/hexo-intor/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;史上最详细的Hexo博客搭建图文教程&lt;/a&gt;。&lt;/li&gt;
-&lt;li&gt;上面生成的博客太简陋，所以我们需要用 Hexo 的模板。Github 上 Star 最多的是&lt;a href=&quot;http://theme-next.iissnan.com/getting-started.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;NextT&lt;/a&gt;，确实很专业，外观够炫 (&lt;a href=&quot;http://notes.iissnan.com/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Demo&lt;/a&gt;)，功能也很丰富，改几行配置文件就能完成很多事情：&lt;ul&gt;
+&lt;li&gt;先看&lt;a href=&quot;https://pages.github.com/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;GitHub Pages&lt;/a&gt;文档，用它托管一个只包含 index.html 的静态网站。成功后，你能通过&lt;code&gt;http://username.github.io&lt;/code&gt;访问这个静态博客。&lt;/li&gt;
+&lt;li&gt;注册域名，添加 CNAME record 重定向到你刚创建的 GitHub Pages 上的静态博客。另外，GitHub Pages 那边也需要配置一下： &lt;a href=&quot;https://help.github.com/articles/using-a-custom-domain-with-github-pages/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Using a custom domain with GitHub Pages&lt;/a&gt;。&lt;/li&gt;
+&lt;li&gt;了解 &lt;a href=&quot;https://hexo.io/docs/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Hexo&lt;/a&gt; 这个静态博客生成器，按照 Doc 在本机创建一个博客模板。此时运行&lt;code&gt;hexo generate&lt;/code&gt;命令可以根据初始模板生成对应的静态网站，再 push 到前面创建的 GitHub Pages 的 Repo 的话，其实一个基本的博客已经完工。这里有篇很详细的教程：&lt;a href=&quot;https://xuanwo.org/2015/03/26/hexo-intor/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;史上最详细的Hexo博客搭建图文教程&lt;/a&gt;。&lt;/li&gt;
+&lt;li&gt;上面的博客还太简单，所以我们要用 Hexo 主题。Github 上 Star 最多的是&lt;a href=&quot;http://theme-next.iissnan.com/getting-started.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;NextT&lt;/a&gt;，质量很高，也挺好看 (&lt;a href=&quot;http://notes.iissnan.com/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Demo&lt;/a&gt;)，改几行配置文件就能完成很多事情：&lt;ul&gt;
 &lt;li&gt;多说/Disqus 评论&lt;/li&gt;
 &lt;li&gt;百度/腾讯/Google 统计&lt;/li&gt;
-&lt;li&gt;微信打赏&lt;/li&gt;
-&lt;li&gt;微信公众号&lt;/li&gt;
+&lt;li&gt;微信打赏/公众号&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;到这里就全部完工了，以后每次添加新文章，在 Hexo 的模板 Repo 里面&lt;code&gt;hexo new &amp;quot;post_name&amp;quot;&lt;/code&gt;，然后运行&lt;code&gt;hexo generate&lt;/code&gt;得到静态网站，再 push 到&lt;code&gt;https://github.com/username/username.github.io&lt;/code&gt; (或者&lt;code&gt;hexo deploy&lt;/code&gt;)，博客内容就更新了。&lt;/p&gt;
+&lt;p&gt;至此全部完工，以后想添加新文章，在 Hexo 的模板 Repo 里&lt;code&gt;hexo new &amp;quot;post_name&amp;quot;&lt;/code&gt;，再运行&lt;code&gt;hexo generate&lt;/code&gt;，最后 push 到&lt;code&gt;https://github.com/username/username.github.io&lt;/code&gt; ，一篇新的博文就发布了。&lt;/p&gt;
 </content>
     
     <summary type="html">
     
-      &lt;p&gt;我自己想搭博客很久了，之前是不会 Web 编程；后来终于学会做网站，但仍然嫌麻烦不想自己做博客。&lt;br&gt;
+      &lt;p&gt;我想自己搭博客很久了，之前是不会 Web，等到终于会做网站的时候，已经嫌麻烦不太想弄了，所以转而寻求现成的博客生成、托管方案。&lt;br&gt;
     
     </summary>
     
