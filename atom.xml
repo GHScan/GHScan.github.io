@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.wbscan.com/"/>
-  <updated>2016-05-08T12:07:43.827Z</updated>
+  <updated>2016-05-08T13:17:45.703Z</updated>
   <id>http://blog.wbscan.com/</id>
   
   <author>
@@ -14,6 +14,67 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>MiniDump文件的多种创建和使用方法</title>
+    <link href="http://blog.wbscan.com/2016/05/08/HowToCatpureAndUseMiniDump/"/>
+    <id>http://blog.wbscan.com/2016/05/08/HowToCatpureAndUseMiniDump/</id>
+    <published>2016-05-08T12:16:10.000Z</published>
+    <updated>2016-05-08T13:17:45.703Z</updated>
+    
+    <content type="html">&lt;p&gt;前面两篇文章(&lt;a href=&quot;http://blog.wbscan.com/2016/05/08/StructuredExceptionHandling/&quot;&gt;1&lt;/a&gt;, &lt;a href=&quot;http://blog.wbscan.com/2016/05/08/CreateMiniDumpWithWindowsApi/&quot;&gt;2&lt;/a&gt;)从编程角度讲了Windows异常处理机制和用API创建MinDump文件，这里再来讲一些其他创建MiniDump的方式，以及MiniDump文件的基本使用。&lt;br&gt;&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&quot;创建MiniDump文件&quot;&gt;&lt;a href=&quot;#创建MiniDump文件&quot; class=&quot;headerlink&quot; title=&quot;创建MiniDump文件&quot;&gt;&lt;/a&gt;创建MiniDump文件&lt;/h3&gt;&lt;p&gt;由于不同事故现场有自己的限制，可能用户程序根本没有主动生成MiniDump文件，或者程序在运行、但你想要去诊断它的状态。&lt;/p&gt;
+&lt;p&gt;这篇&lt;a href=&quot;http://www.wintellect.com/devcenter/jrobbins/how-to-capture-a-minidump-let-me-count-the-ways&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;文章&lt;/a&gt;列举了各种MiniDump生成方法，我认为很有价值：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://www.windbg.org/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;WinDBG&lt;/a&gt;的&lt;a href=&quot;https://msdn.microsoft.com/en-us/library/windows/hardware/ff562428%28v=vs.85%29.aspx&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;.dump&lt;/a&gt;命令&lt;/li&gt;
+&lt;li&gt;Visual Studio的&lt;code&gt;将转储另存为&lt;/code&gt;菜单项：调试状态下，&lt;code&gt;调试 -&amp;gt; 将转储另存为&lt;/code&gt;。可以选择创建Mini Dump或者Full Dump。&lt;/li&gt;
+&lt;li&gt;任务管理器：&lt;code&gt;选中进程 -&amp;gt; 创建转储文件&lt;/code&gt;，这里创建的是Full Dump。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://technet.microsoft.com/en-us/sysinternals/bb896653.aspx&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Process Explorer&lt;/a&gt;: &lt;code&gt;选中进程 -&amp;gt; 创建Mini Dump/Full Dump&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://technet.microsoft.com/en-us/sysinternals/dd996900.aspx&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;ProcDump&lt;/a&gt;: ProcDump可以基于各种条件来创建Mini Dump或者Full Dump，比如：&lt;ul&gt;
+&lt;li&gt;procdump notepad: 为notepad创建Mini Dump&lt;/li&gt;
+&lt;li&gt;procdump -ma 4572: 为pid为4572的进程创建Full Dump&lt;/li&gt;
+&lt;li&gt;procdump -mp -e store.exe: 当store.exe遇到第一个未处理异常的时候，为它创建一个比Mini Dump信息稍多的Dump文件&lt;/li&gt;
+&lt;li&gt;procdump -c 20 -s 5 -n 3 consume: 监视consume进程，一旦它连续5秒的CPU使用率都超过20%，则创建MiniDump，总共最多Dump 3次。之后，你可以用这不同的Dump来做对比等。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;通过Windows API &lt;a href=&quot;https://msdn.microsoft.com/en-us/library/ms680360.aspx&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;MiniDumpWriteDump&lt;/a&gt; 创建转储文件，能够在代码中精确的控制需要转储的进程信息。这是我们上篇文章做的。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;使用MiniDump文件&quot;&gt;&lt;a href=&quot;#使用MiniDump文件&quot; class=&quot;headerlink&quot; title=&quot;使用MiniDump文件&quot;&gt;&lt;/a&gt;使用MiniDump文件&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;使用Visual Studio，&lt;code&gt;文件 -&amp;gt; 打开 -&amp;gt; 文件&lt;/code&gt;选中刚才创建的MiniDump文件即可。这个MiniDump文件，如果是从Managed进程生成的，那么用法会更丰富。&lt;ul&gt;
+&lt;li&gt;Native程序生成的MiniDump: 一般能够查看调用栈，如果是Full Dump的话，往往还可以查看堆数据。注意，如果MiniDump不是基于异常生成的，而是直接创建的，那么可以通过&lt;code&gt;调试 -&amp;gt; 窗口 -&amp;gt; 线程&lt;/code&gt;来查看所有线程的调用栈。&lt;/li&gt;
+&lt;li&gt;Manged程序生成的MiniDump: 线程状态的诊断和Native程序差不多，但打开Managed程序的Dump文件时，多了一个菜单项是&lt;code&gt;调试托管内存&lt;/code&gt;，这个功能很强大：&lt;ul&gt;
+&lt;li&gt;查找托管堆中指定类型的所有对象 &lt;/li&gt;
+&lt;li&gt;查找特定对象所包含的引用&lt;/li&gt;
+&lt;li&gt;查找从GC根集到特定对象的所有引用路径。这是非常强大的特性，在资源泄露的排查中非常有帮助。比如，你发现程序的内存一直上涨，并且特定类型对象特别多，那么，利用Visual Studio的这个功能，选中异常类型的一个实例，就能看到它为什么还被引用住，而没有释放了（比如，被添加到一个static的字典里面，由于逻辑错误，没有被正常移除）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;使用WinDBG或者&lt;a href=&quot;https://msdn.microsoft.com/en-us/library/windows/hardware/hh406277%28v=vs.85%29.aspx&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;cdb&lt;/a&gt;。这些工具尺寸小，往往可以直接用于在生产服上的本机调试，但缺乏对Managed程序的特殊调试支持。另外，相比Visual Studio，上手曲线更大。作为初步诊断，可以直接在目标机上，通过任务管理器创建MiniDump，然后运行&lt;code&gt;cdb -c &amp;quot;~*kv; q&amp;quot; -y SymbolPath -z DumpFile&lt;/code&gt;命令，这将打印所有线程的Stack trace，能用于处理一些简单问题。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;p&gt;这里讲了各种MiniDump文件的创建方式和基本使用，对常见问题诊断很有帮助。&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;前面两篇文章(&lt;a href=&quot;http://blog.wbscan.com/2016/05/08/StructuredExceptionHandling/&quot;&gt;1&lt;/a&gt;, &lt;a href=&quot;http://blog.wbscan.com/2016/05/08/CreateMiniDumpWithWindowsApi/&quot;&gt;2&lt;/a&gt;)从编程角度讲了Windows异常处理机制和用API创建MinDump文件，这里再来讲一些其他创建MiniDump的方式，以及MiniDump文件的基本使用。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="Error Handling" scheme="http://blog.wbscan.com/categories/Error-Handling/"/>
+    
+    
+      <category term="Windows" scheme="http://blog.wbscan.com/tags/Windows/"/>
+    
+      <category term="Exception" scheme="http://blog.wbscan.com/tags/Exception/"/>
+    
+      <category term="MiniDump" scheme="http://blog.wbscan.com/tags/MiniDump/"/>
+    
+      <category term="SEH" scheme="http://blog.wbscan.com/tags/SEH/"/>
+    
+  </entry>
   
   <entry>
     <title>用MiniDumpWriteDump来创建MiniDump</title>
@@ -172,7 +233,7 @@
     <link href="http://blog.wbscan.com/2016/05/08/HowToSetupTheHexoBasedBlog/"/>
     <id>http://blog.wbscan.com/2016/05/08/HowToSetupTheHexoBasedBlog/</id>
     <published>2016-05-07T20:15:18.000Z</published>
-    <updated>2016-05-08T12:04:26.486Z</updated>
+    <updated>2016-05-08T13:18:49.022Z</updated>
     
     <content type="html">&lt;p&gt;我想自己搭博客很久了，之前是不会 Web，等到终于会做网站的时候，已经嫌麻烦不太想弄了，所以转而寻求现成的博客生成、托管方案。&lt;br&gt;&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;hr&gt;
@@ -199,7 +260,7 @@
     
     </summary>
     
-      <category term="Engineering" scheme="http://blog.wbscan.com/categories/Engineering/"/>
+      <category term="Web" scheme="http://blog.wbscan.com/categories/Web/"/>
     
     
       <category term="Web" scheme="http://blog.wbscan.com/tags/Web/"/>

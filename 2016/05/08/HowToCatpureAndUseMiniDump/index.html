@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="Windows,Exception,MiniDump,SEH," />
 
 
 
@@ -86,16 +86,16 @@
 
 
 
-<meta name="description" content="致力于成为一台优秀的编码机器">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Tags">
-<meta property="og:url" content="http://blog.wbscan.com/tags/index.html">
+<meta name="description" content="前面两篇文章(1, 2)从编程角度讲了Windows异常处理机制和用API创建MinDump文件，这里再来讲一些其他创建MiniDump的方式，以及MiniDump文件的基本使用。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MiniDump文件的多种创建和使用方法">
+<meta property="og:url" content="http://blog.wbscan.com/2016/05/08/HowToCatpureAndUseMiniDump/index.html">
 <meta property="og:site_name" content="Scan的博客">
-<meta property="og:description" content="致力于成为一台优秀的编码机器">
-<meta property="og:updated_time" content="2016-05-07T15:11:01.507Z">
+<meta property="og:description" content="前面两篇文章(1, 2)从编程角度讲了Windows异常处理机制和用API创建MinDump文件，这里再来讲一些其他创建MiniDump的方式，以及MiniDump文件的基本使用。">
+<meta property="og:updated_time" content="2016-05-08T13:17:45.703Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Tags">
-<meta name="twitter:description" content="致力于成为一台优秀的编码机器">
+<meta name="twitter:title" content="MiniDump文件的多种创建和使用方法">
+<meta name="twitter:description" content="前面两篇文章(1, 2)从编程角度讲了Windows异常处理机制和用API创建MinDump文件，这里再来讲一些其他创建MiniDump的方式，以及MiniDump文件的基本使用。">
 
 
 
@@ -113,13 +113,7 @@
   };
 </script>
 
-  <title>
-  
-
-  
-    标签 | Scan的博客
-  
-</title>
+  <title> MiniDump文件的多种创建和使用方法 | Scan的博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -149,7 +143,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -249,16 +243,182 @@
 
   <div id="posts" class="posts-expand">
     
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
     
-      <div class="tag-cloud">
-        <div class="tag-cloud-title">
-            目前共计 6 个标签
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                MiniDump文件的多种创建和使用方法
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-05-08T20:16:10+08:00" content="2016-05-08">
+              2016-05-08
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Error-Handling/" itemprop="url" rel="index">
+                    <span itemprop="name">Error Handling</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/05/08/HowToCatpureAndUseMiniDump/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/05/08/HowToCatpureAndUseMiniDump/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
         </div>
-        <div class="tag-cloud-tags">
-          <a href="/tags/Exception/" style="font-size: 30px; color: #111">Exception</a> <a href="/tags/GitHub/" style="font-size: 12px; color: #ccc">GitHub</a> <a href="/tags/MiniDump/" style="font-size: 30px; color: #111">MiniDump</a> <a href="/tags/SEH/" style="font-size: 30px; color: #111">SEH</a> <a href="/tags/Web/" style="font-size: 12px; color: #ccc">Web</a> <a href="/tags/Windows/" style="font-size: 30px; color: #111">Windows</a>
-        </div>
-      </div>
+      </header>
     
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>前面两篇文章(<a href="http://blog.wbscan.com/2016/05/08/StructuredExceptionHandling/">1</a>, <a href="http://blog.wbscan.com/2016/05/08/CreateMiniDumpWithWindowsApi/">2</a>)从编程角度讲了Windows异常处理机制和用API创建MinDump文件，这里再来讲一些其他创建MiniDump的方式，以及MiniDump文件的基本使用。<br><a id="more"></a></p>
+<hr>
+<h3 id="创建MiniDump文件"><a href="#创建MiniDump文件" class="headerlink" title="创建MiniDump文件"></a>创建MiniDump文件</h3><p>由于不同事故现场有自己的限制，可能用户程序根本没有主动生成MiniDump文件，或者程序在运行、但你想要去诊断它的状态。</p>
+<p>这篇<a href="http://www.wintellect.com/devcenter/jrobbins/how-to-capture-a-minidump-let-me-count-the-ways" target="_blank" rel="external">文章</a>列举了各种MiniDump生成方法，我认为很有价值：</p>
+<ul>
+<li><a href="http://www.windbg.org/" target="_blank" rel="external">WinDBG</a>的<a href="https://msdn.microsoft.com/en-us/library/windows/hardware/ff562428%28v=vs.85%29.aspx" target="_blank" rel="external">.dump</a>命令</li>
+<li>Visual Studio的<code>将转储另存为</code>菜单项：调试状态下，<code>调试 -&gt; 将转储另存为</code>。可以选择创建Mini Dump或者Full Dump。</li>
+<li>任务管理器：<code>选中进程 -&gt; 创建转储文件</code>，这里创建的是Full Dump。</li>
+<li><a href="https://technet.microsoft.com/en-us/sysinternals/bb896653.aspx" target="_blank" rel="external">Process Explorer</a>: <code>选中进程 -&gt; 创建Mini Dump/Full Dump</code></li>
+<li><a href="https://technet.microsoft.com/en-us/sysinternals/dd996900.aspx" target="_blank" rel="external">ProcDump</a>: ProcDump可以基于各种条件来创建Mini Dump或者Full Dump，比如：<ul>
+<li>procdump notepad: 为notepad创建Mini Dump</li>
+<li>procdump -ma 4572: 为pid为4572的进程创建Full Dump</li>
+<li>procdump -mp -e store.exe: 当store.exe遇到第一个未处理异常的时候，为它创建一个比Mini Dump信息稍多的Dump文件</li>
+<li>procdump -c 20 -s 5 -n 3 consume: 监视consume进程，一旦它连续5秒的CPU使用率都超过20%，则创建MiniDump，总共最多Dump 3次。之后，你可以用这不同的Dump来做对比等。</li>
+</ul>
+</li>
+<li>通过Windows API <a href="https://msdn.microsoft.com/en-us/library/ms680360.aspx" target="_blank" rel="external">MiniDumpWriteDump</a> 创建转储文件，能够在代码中精确的控制需要转储的进程信息。这是我们上篇文章做的。</li>
+</ul>
+<h3 id="使用MiniDump文件"><a href="#使用MiniDump文件" class="headerlink" title="使用MiniDump文件"></a>使用MiniDump文件</h3><ul>
+<li>使用Visual Studio，<code>文件 -&gt; 打开 -&gt; 文件</code>选中刚才创建的MiniDump文件即可。这个MiniDump文件，如果是从Managed进程生成的，那么用法会更丰富。<ul>
+<li>Native程序生成的MiniDump: 一般能够查看调用栈，如果是Full Dump的话，往往还可以查看堆数据。注意，如果MiniDump不是基于异常生成的，而是直接创建的，那么可以通过<code>调试 -&gt; 窗口 -&gt; 线程</code>来查看所有线程的调用栈。</li>
+<li>Manged程序生成的MiniDump: 线程状态的诊断和Native程序差不多，但打开Managed程序的Dump文件时，多了一个菜单项是<code>调试托管内存</code>，这个功能很强大：<ul>
+<li>查找托管堆中指定类型的所有对象 </li>
+<li>查找特定对象所包含的引用</li>
+<li>查找从GC根集到特定对象的所有引用路径。这是非常强大的特性，在资源泄露的排查中非常有帮助。比如，你发现程序的内存一直上涨，并且特定类型对象特别多，那么，利用Visual Studio的这个功能，选中异常类型的一个实例，就能看到它为什么还被引用住，而没有释放了（比如，被添加到一个static的字典里面，由于逻辑错误，没有被正常移除）。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>使用WinDBG或者<a href="https://msdn.microsoft.com/en-us/library/windows/hardware/hh406277%28v=vs.85%29.aspx" target="_blank" rel="external">cdb</a>。这些工具尺寸小，往往可以直接用于在生产服上的本机调试，但缺乏对Managed程序的特殊调试支持。另外，相比Visual Studio，上手曲线更大。作为初步诊断，可以直接在目标机上，通过任务管理器创建MiniDump，然后运行<code>cdb -c &quot;~*kv; q&quot; -y SymbolPath -z DumpFile</code>命令，这将打印所有线程的Stack trace，能用于处理一些简单问题。</li>
+</ul>
+<hr>
+<p>这里讲了各种MiniDump文件的创建方式和基本使用，对常见问题诊断很有帮助。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Windows/" rel="tag">#Windows</a>
+          
+            <a href="/tags/Exception/" rel="tag">#Exception</a>
+          
+            <a href="/tags/MiniDump/" rel="tag">#MiniDump</a>
+          
+            <a href="/tags/SEH/" rel="tag">#SEH</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/05/08/CreateMiniDumpWithWindowsApi/" rel="next" title="用MiniDumpWriteDump来创建MiniDump">
+                <i class="fa fa-chevron-left"></i> 用MiniDumpWriteDump来创建MiniDump
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
   </div>
 
 
@@ -297,8 +457,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+      <section class="site-overview sidebar-panel ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.jpg"
@@ -415,6 +584,17 @@
       </section>
 
       
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建MiniDump文件"><span class="nav-number">1.</span> <span class="nav-text">创建MiniDump文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用MiniDump文件"><span class="nav-number">2.</span> <span class="nav-text">使用MiniDump文件</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
 
     </div>
   </aside>
@@ -517,6 +697,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
 
   
 
@@ -533,9 +717,9 @@
 
     <script type="text/javascript">
       var disqus_shortname = 'blogwbscancom';
-      var disqus_identifier = 'tags/index.html';
-      var disqus_title = 'Tags';
-      var disqus_url = 'http://blog.wbscan.com/tags/index.html';
+      var disqus_identifier = '2016/05/08/HowToCatpureAndUseMiniDump/';
+      var disqus_title = 'MiniDump文件的多种创建和使用方法';
+      var disqus_url = 'http://blog.wbscan.com/2016/05/08/HowToCatpureAndUseMiniDump/';
 
       function run_disqus_script(disqus_script){
         var dsq = document.createElement('script');
