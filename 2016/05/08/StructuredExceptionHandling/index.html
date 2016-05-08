@@ -1,0 +1,757 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Scan的轮子工坊" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="背景上一次在 Windows 上用 C/C++ 做正经项目、需要做严格的异常处理和调试的，已经是 5 年前了，那时我还是端游的引擎程序员。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Structured Exception Handling">
+<meta property="og:url" content="http://blog.wbscan.com/2016/05/08/StructuredExceptionHandling/index.html">
+<meta property="og:site_name" content="Scan的轮子工坊">
+<meta property="og:description" content="背景上一次在 Windows 上用 C/C++ 做正经项目、需要做严格的异常处理和调试的，已经是 5 年前了，那时我还是端游的引擎程序员。">
+<meta property="og:updated_time" content="2016-05-08T00:52:58.287Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Structured Exception Handling">
+<meta name="twitter:description" content="背景上一次在 Windows 上用 C/C++ 做正经项目、需要做严格的异常处理和调试的，已经是 5 年前了，那时我还是端游的引擎程序员。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> Structured Exception Handling | Scan的轮子工坊 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=56078029";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Scan的轮子工坊</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">记踩过的坑和不成熟的想法</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Structured Exception Handling
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-05-08T05:33:42+08:00" content="2016-05-08">
+              2016-05-08
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/05/08/StructuredExceptionHandling/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/05/08/StructuredExceptionHandling/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>上一次在 Windows 上用 C/C++ 做正经项目、需要做严格的异常处理和调试的，已经是 5 年前了，那时我还是端游的引擎程序员。<br><a id="more"></a><br>在那以后，经历了移动开发乃至现在用 C# 做开发，都不需要跟 Windows 的结构化异常处理 (<a href="https://zh.wikipedia.org/zh/%E7%BB%93%E6%9E%84%E5%8C%96%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86" target="_blank" rel="external">SEH</a>) 打交道。<br>虽说用不上，但看技术文档总有可能碰上，正好最近就遇到这样的场合，显然我已经把 <a href="https://book.douban.com/subject/3235659/" target="_blank" rel="external">《Windows核心编程》</a> 里的细节给忘光光了，只好重新学习下。</p>
+<h3 id="SEH的概念"><a href="#SEH的概念" class="headerlink" title="SEH的概念"></a>SEH的概念</h3><p>把 MSDN 上的<a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms680657%28v=vs.85%29.aspx" target="_blank" rel="external">文档</a> 读了过后，发现最有价值的，其实只是<a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms679270%28v=vs.85%29.aspx" target="_blank" rel="external">这块儿</a>。</p>
+<p>首先，Windows 的 SEH 整个脉络是这样的：</p>
+<ul>
+<li>Exception Triggering<ul>
+<li>Guarded Body</li>
+<li>Raising Exception</li>
+</ul>
+</li>
+<li>Exception Handling<ul>
+<li><a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms679353%28v=vs.85%29.aspx" target="_blank" rel="external">Frame-based Exception Handling</a></li>
+<li><a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms679270%28v=vs.85%29.aspx" target="_blank" rel="external">Vectored Exception Handling</a></li>
+<li><a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms681394%28v=vs.85%29.aspx" target="_blank" rel="external">Termination Handling</a></li>
+</ul>
+</li>
+</ul>
+<p>就是分别对应异常触发和异常处理，而在编程层面讲，上面的功能需要藉由以下关键字或者函数来实施：(和上面一一对应)</p>
+<ul>
+<li>Exception Triggering<ul>
+<li><a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms679270%28v=vs.85%29.aspx" target="_blank" rel="external">__try</a> block</li>
+<li><a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms680552%28v=vs.85%29.aspx" target="_blank" rel="external">RaiseException</a> function, 以及硬件异常(CPU 触发)</li>
+</ul>
+</li>
+<li>Exception Handling<ul>
+<li><a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms679270%28v=vs.85%29.aspx" target="_blank" rel="external">__except</a> block, <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms679356%28v=vs.85%29.aspx" target="_blank" rel="external">GetExceptionCode</a>,  <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms679357%28v=vs.85%29.aspx" target="_blank" rel="external">GetExceptionInformation</a></li>
+<li><a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms679273%28v=vs.85%29.aspx" target="_blank" rel="external">AddVectoredContinueHandler</a>, <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms680567%28v=vs.85%29.aspx" target="_blank" rel="external">RemoveVectoredContinueHandler</a>, <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms679274%28v=vs.85%29.aspx" target="_blank" rel="external">AddVectoredExceptionHandler</a>, <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms680571%28v=vs.85%29.aspx" target="_blank" rel="external">RemoveVectoredExceptionHandler</a> </li>
+<li><a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms679270%28v=vs.85%29.aspx" target="_blank" rel="external">__finally</a> block, <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms679265%28v=vs.85%29.aspx" target="_blank" rel="external">AbnormalTermination</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="SEH的原理"><a href="#SEH的原理" class="headerlink" title="SEH的原理"></a>SEH的原理</h3><p>假设我们有一系列的函数，一层层的 Call 进去，每一个 Callsite ，都位于 Caller 的 __try block  中。那么，当最内层的一个函数调用 RaiseException 来抛出一个软件异常、或者在除零/非法内存访问抛出硬件异常的情况下，会发生这些事：</p>
+<ol>
+<li>当执行流进入一个函数的 <strong>try block 时，会把 </strong>except 的filtering expression (也就是 <strong>except 的条件，在支持异常处理的高级语言中，对应 catch(e) 中的e )、handling block、以及 </strong>finally block 这三个程序块儿的地址 push 到一个 thread local 的链表头上，从而将所有栈上 frame 的 exception handling 逻辑块串成一个链表</li>
+<li>当 Call stack 的栈顶上触发一次异常时，无论是软件异常还是硬件异常，OS 先准备异常码(GetExceptionCode 的返回值)和调用上下文 (包括当前线程的各种寄存器，即 GetExceptionInformation 的返回值)，然后以他们为参数 (除非用户在filter中完全没有访问这些信息)，逐个调用 thread local 的异常处理链中的 filter，检测每个 filter 的返回值，决定下一步行为。此时，filter 可以返回三种结果，来影响异常处理流程：<ul>
+<li><a href="https://msdn.microsoft.com/en-us/library/s58ftw19.aspx" target="_blank" rel="external">EXCEPTION_CONTINUE_EXECUTION</a>: 线程继续从异常触发点往下执行，即忽略异常。一般在返回该值之前 filter 需要调整 Eip/Rip 值，否则同样的异常会再次触发。如果一个 __except 的 filter 返回该值表示要继续执行，那么，通过 AddVectoredContinueHandler 注册的 handler 会被调用。</li>
+<li>EXCEPTION_CONTINUE_SEARCH: 沿异常处理链继续尝试下个 filter，即尝试调用栈上更外层函数的 except 是否匹配。如果所有的用户定义的 __except 的 filter 块都匹配失败，则调用用户通过 <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms680634%28v=vs.85%29.aspx" target="_blank" rel="external">SetUnhandledExceptionFilter</a> 注册的顶层filter，一般用户可以在这个 filter 里面写 minidump 文件了。</li>
+<li>EXCEPTION_EXECUTE_HANDLER: 执行该 filter 对应的 handling block，即认为该 filter 匹配上了。由于匹配的 filter 所对应的 handler 很可能不在 Call stack 的栈顶，那么需要进行 Stack unwinding。在Stack unwinding 之前，如果用户通过 AddVectoredExceptionHandler 注册了 handler ，此时也会被调用；之所以要强调在栈开解之前调用 handler，是因为 handler 需要访问异常触发现场完整的栈。另外，在栈开解的同时，还要执行被弹出的 Stack frame 的相应 <strong>finally 块的 handler。最后，执行完对应 </strong>except 的 handler 块儿过后，线程继续从 __except 之后往下执行。</li>
+</ul>
+</li>
+</ol>
+<p>恩，上面的过程很复杂，我们再简单的描述下：</p>
+<ol>
+<li><strong>try 使得 </strong>except, __finally 的过滤条件和处理逻辑被 push 到当前线程的异常处理链上</li>
+<li>触发异常时，以异常信息为参数，沿着异常处理链逐个调用 filter 决定处理流程。filter 可以说“忽略该异常”，那么，线程在调用 vectored continue handler 过后继续从异常触发的指令往下执行；如果 filter 说“继续搜索”，那么，我们沿异常处理链访问下个 filter，如果最终都没有匹配的 filter，会调用通过 SetUnhandledExceptionFilter 注册的顶层 handler；如果 filter 说 “匹配”，则准备执行该 filter 对应的 handler (即 <strong>except 的 block)，于是，先调用 vectored exception handler，再进行 Stack unwinding，弹出中间栈帧的时候执行相应的 </strong>finally 块儿，最后，执行匹配位置的 handler。</li>
+</ol>
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><ol>
+<li><p>第一个例子，filter 说“忽略”，所以，vectored continue handler 被调用，整个程序会输出 123 。注意返回 EXCEPTION_CONTINUE_EXECUTION 的 filter 需要调整 Eip。</p>
+ <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;windows.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> LONG NTAPI <span class="title">MyFramedFilter</span><span class="params">(_EXCEPTION_POINTERS *ExceptionInfo)</span> </span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="comment">// skip the illegal op:  *reinterpret_cast&lt;int*&gt;(nullptr) = 0;</span></span><br><span class="line">    <span class="keyword">reinterpret_cast</span>&lt;PCONTEXT&gt;(ExceptionInfo-&gt;ContextRecord)-&gt;Eip += <span class="number">9</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">"1"</span>);</span><br><span class="line">    return EXCEPTION_CONTINUE_EXECUTION;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> LONG NTAPI <span class="title">MyVectoredContinueHandler</span><span class="params">(_EXCEPTION_POINTERS *ExceptionInfo)</span> </span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">"2"</span>);</span><br><span class="line">    return EXCEPTION_CONTINUE_EXECUTION;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Func2</span><span class="params">()</span> </span><br><span class="line"></span>&#123;</span><br><span class="line">    *<span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">int</span>*&gt;(<span class="literal">nullptr</span>) = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Func1</span><span class="params">()</span> </span><br><span class="line"></span>&#123;</span><br><span class="line">    __try </span><br><span class="line">    &#123;</span><br><span class="line">        Func2();</span><br><span class="line">    &#125; </span><br><span class="line">    __except (MyFramedFilter(GetExceptionInformation())) </span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">puts</span>(<span class="string">"never"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">"3"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span><br><span class="line"></span>&#123;</span><br><span class="line">    AddVectoredContinueHandler(<span class="number">1</span>, MyVectoredContinueHandler);</span><br><span class="line">    Func1();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>第二个例子，filter 说“匹配”，所以先执行 filter，在栈开解的时候执行 finally block ，最后是 __except 的 handler 和之后的代码。程序输出 1234 。</p>
+ <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> LONG NTAPI <span class="title">MyFramedFilter</span><span class="params">(_EXCEPTION_POINTERS *ExceptionInfo)</span> </span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">"1"</span>);</span><br><span class="line">    return EXCEPTION_EXECUTE_HANDLER;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Func2</span><span class="params">()</span> </span><br><span class="line"></span>&#123;</span><br><span class="line">    __try </span><br><span class="line">    &#123;</span><br><span class="line">        *<span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">int</span>*&gt;(<span class="literal">nullptr</span>) = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    __finally </span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">puts</span>(<span class="string">"2"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Func1</span><span class="params">()</span> </span><br><span class="line"></span>&#123;</span><br><span class="line">    __try </span><br><span class="line">    &#123;</span><br><span class="line">        Func2();</span><br><span class="line">    &#125; </span><br><span class="line">    __except (MyFramedFilter(GetExceptionInformation())) </span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">puts</span>(<span class="string">"3"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">"4"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span><br><span class="line"></span>&#123;</span><br><span class="line">    Func1();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>第三个例子，filter 说“继续搜索”，于是顶层的 filter 被调用，这里顶层 filter 返回匹配，所以栈开解，调用内层的 __finally handler。程序输出 123 。</p>
+ <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> LONG NTAPI <span class="title">MyFramedFilter</span><span class="params">(_EXCEPTION_POINTERS *ExceptionInfo)</span> </span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">"1"</span>);</span><br><span class="line">    return EXCEPTION_CONTINUE_SEARCH;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> LONG NTAPI <span class="title">MyTopLevelFilter</span><span class="params">(_EXCEPTION_POINTERS *ExceptionInfo)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">"2"</span>);</span><br><span class="line">    return EXCEPTION_EXECUTE_HANDLER;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Func2</span><span class="params">()</span> </span><br><span class="line"></span>&#123;</span><br><span class="line">    __try </span><br><span class="line">    &#123;</span><br><span class="line">        *<span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">int</span>*&gt;(<span class="literal">nullptr</span>) = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    __finally </span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">puts</span>(<span class="string">"3"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Func1</span><span class="params">()</span> </span><br><span class="line"></span>&#123;</span><br><span class="line">    __try </span><br><span class="line">    &#123;</span><br><span class="line">        Func2();</span><br><span class="line">    &#125; </span><br><span class="line">    __except (MyFramedFilter(GetExceptionInformation())) </span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">puts</span>(<span class="string">"never"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">"never"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span><br><span class="line"></span>&#123;</span><br><span class="line">    SetUnhandledExceptionFilter(MyTopLevelFilter);</span><br><span class="line">    Func1();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="对比高级语言的异常"><a href="#对比高级语言的异常" class="headerlink" title="对比高级语言的异常"></a>对比高级语言的异常</h3><p>相比高级语言中的 try/catch/finally ， Windows 的 SEG 多了这些优点：</p>
+<ul>
+<li>能够捕获非法内存访问等硬件异常 (EXCEPTION_INT_DIVIDE_BY_ZERO, EXCEPTION_INT_OVERFLOW, EXCEPTION_ACCESS_VIOLATION)。</li>
+<li>可以从异常触发点继续执行 (EXCEPTION_CONTINUE_EXECUTION)。</li>
+<li>可以在判断 __try block 有没有被完全执行 (AbnormalTermination)。</li>
+<li>filter expression 比高级语言中的异常类型匹配更强大。</li>
+<li>捕获的异常信息可以用于创建 MiniDump 等 (_EXCEPTION_POINTERS)。</li>
+</ul>
+<p>以下是缺点：</p>
+<ul>
+<li>C++ 的异常处理可能不是通过 SEH 实现，于是结构化异常抛出时，类析构函数不会被调用。</li>
+<li>特定于 Windows 平台。</li>
+</ul>
+<h3 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h3><p>这是一篇即使放到10年前都不算新的文章，写它，更算是把我学习的结果记下来，以及刻意的丰富下博客内容吧。</p>
+<p>就这篇文章讨论的这个话题而言，还是再推荐下 <a href="https://book.douban.com/subject/3235659/" target="_blank" rel="external">Windows核心编程</a> 。<br>尽管我这次没看，但 Jeffrey 的书总是深入浅出，令人爱不释手。(过段时间我应该会看他的 <a href="https://book.douban.com/subject/4112979/" target="_blank" rel="external">CLR via C#</a> )</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/05/08/HowToSetupTheHexoBasedBlog/" rel="next" title="讲下怎么用Hexo+NexT搭这个博客">
+                <i class="fa fa-chevron-left"></i> 讲下怎么用Hexo+NexT搭这个博客
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Scan" />
+          <p class="site-author-name" itemprop="name">Scan</p>
+          <p class="site-description motion-element" itemprop="description">码多了觉得自己还凑活的人</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">2</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/GHScan" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.weibo.com/2240937697/profile" target="_blank" title="weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/WBScan" target="_blank" title="zhihu">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              关注
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.cppblog.com/vczh/" title="vczh" target="_blank">vczh</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://rednaxelafx.iteye.com/" title="RednaxelaFX" target="_blank">RednaxelaFX</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.cnblogs.com/miloyip/" title="MiloYip" target="_blank">MiloYip</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.codingnow.com/" title="云风" target="_blank">云风</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.yinwang.org/" title="王垠" target="_blank">王垠</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SEH的概念"><span class="nav-number">2.</span> <span class="nav-text">SEH的概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SEH的原理"><span class="nav-number">3.</span> <span class="nav-text">SEH的原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#示例"><span class="nav-number">4.</span> <span class="nav-text">示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对比高级语言的异常"><span class="nav-number">5.</span> <span class="nav-text">对比高级语言的异常</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结语"><span class="nav-number">6.</span> <span class="nav-text">结语</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Scan</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'blogwbscancom';
+      var disqus_identifier = '2016/05/08/StructuredExceptionHandling/';
+      var disqus_title = 'Structured Exception Handling';
+      var disqus_url = 'http://blog.wbscan.com/2016/05/08/StructuredExceptionHandling/';
+
+      function run_disqus_script(disqus_script){
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+      
+        run_disqus_script('embed.js');
+      
+    </script>
+  
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>
