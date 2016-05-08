@@ -92,7 +92,7 @@
 <meta property="og:url" content="http://blog.wbscan.com/2016/05/08/StructuredExceptionHandling/index.html">
 <meta property="og:site_name" content="Scan的博客">
 <meta property="og:description" content="背景上一次在 Windows 上用 C/C++ 做正经项目、需要做严格异常处理和调试的场合，已经是 5 年前了，那时我还在维护 PC 端游戏引擎。">
-<meta property="og:updated_time" content="2016-05-08T10:31:41.026Z">
+<meta property="og:updated_time" content="2016-05-08T12:02:44.978Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Windows中的结构化异常处理">
 <meta name="twitter:description" content="背景上一次在 Windows 上用 C/C++ 做正经项目、需要做严格异常处理和调试的场合，已经是 5 年前了，那时我还在维护 PC 端游戏引擎。">
@@ -329,6 +329,7 @@
 
       
         <h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>上一次在 Windows 上用 C/C++ 做正经项目、需要做严格异常处理和调试的场合，已经是 5 年前了，那时我还在维护 PC 端游戏引擎。<br><a id="more"></a><br>在那以后，经历了移动开发到现在的 C# 开发，都不需要再跟 Windows 的结构化异常处理 (<a href="https://zh.wikipedia.org/zh/%E7%BB%93%E6%9E%84%E5%8C%96%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86" target="_blank" rel="external">SEH</a>) 打交道。<br>虽说用不上，但看技术文档总有可能碰上，正好最近就有这样的场合，显然我已经把 <a href="https://book.douban.com/subject/3235659/" target="_blank" rel="external">《Windows核心编程》</a> 里的细节给忘光光了，只能重新学习下。</p>
+<hr>
 <h3 id="SEH的概念"><a href="#SEH的概念" class="headerlink" title="SEH的概念"></a>SEH的概念</h3><p>把 MSDN 上的<a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms680657%28v=vs.85%29.aspx" target="_blank" rel="external">文档</a> 读了过后，发现最有价值的，还是<a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms679270%28v=vs.85%29.aspx" target="_blank" rel="external">这里</a>。</p>
 <p>首先，Windows 的 SEH 整个脉络是这样的：</p>
 <ul>
@@ -397,6 +398,7 @@
 <li>C++ 的异常处理可能不是通过 SEH 实现，于是结构化异常抛出时，类析构函数不会被调用。</li>
 <li>特定于 Windows 平台。</li>
 </ul>
+<hr>
 <h3 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h3><p>这是一篇即使放到10年前都不算新的文章，写它，更算是把我学习的结果记下来，以及刻意的丰富下博客内容吧。</p>
 <p>就这篇文章讨论的这个话题而言，还是再推荐下 <a href="https://book.douban.com/subject/3235659/" target="_blank" rel="external">Windows核心编程</a> 。尽管这次我没看这本书，但 Jeffrey 的书总是深入浅出、鞭辟入里。我认为进入一个新领域时，如果正好有他的书，那一定是从入门到进阶的好机会。比如，学习 .Net 就推荐他的 <a href="https://book.douban.com/subject/4112979/" target="_blank" rel="external">CLR via C#</a>。</p>
 
@@ -442,6 +444,10 @@
           </div>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/05/08/CreateMiniDumpWithWindowsApi/" rel="prev" title="用MiniDumpWriteDump来创建MiniDump">
+                用MiniDumpWriteDump来创建MiniDump <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -516,7 +522,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">2</span>
+              <span class="site-state-item-count">3</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

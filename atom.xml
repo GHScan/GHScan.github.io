@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.wbscan.com/"/>
-  <updated>2016-05-08T10:31:41.026Z</updated>
+  <updated>2016-05-08T12:07:43.827Z</updated>
   <id>http://blog.wbscan.com/</id>
   
   <author>
@@ -16,13 +16,65 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>用MiniDumpWriteDump来创建MiniDump</title>
+    <link href="http://blog.wbscan.com/2016/05/08/CreateMiniDumpWithWindowsApi/"/>
+    <id>http://blog.wbscan.com/2016/05/08/CreateMiniDumpWithWindowsApi/</id>
+    <published>2016-05-08T10:59:44.000Z</published>
+    <updated>2016-05-08T12:07:43.827Z</updated>
+    
+    <content type="html">&lt;p&gt;上一篇&lt;a href=&quot;http://blog.wbscan.com/2016/05/08/StructuredExceptionHandling/&quot;&gt;文章&lt;/a&gt;讨论了SEH，这里就基于它做点事儿。&lt;br&gt;&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;任务很简单，就是在发现一个未处理异常时，使用&lt;a href=&quot;https://msdn.microsoft.com/en-us/library/windows/desktop/ms680360%28v=vs.85%29.aspx&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;MiniDumpWriteDump&lt;/a&gt;创建一个Full Dump文件，从而允许之后的异常调试：&lt;/p&gt;
+&lt;figure class=&quot;highlight c&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;18&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;19&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;20&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;21&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;22&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;23&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;24&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;25&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;26&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;27&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;28&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;29&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;30&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;31&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;32&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;33&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;34&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;35&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;36&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;37&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;38&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;39&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;40&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;41&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;42&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;43&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;44&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;45&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;46&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;47&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;48&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;49&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;50&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;#&lt;span class=&quot;meta-keyword&quot;&gt;include&lt;/span&gt; &lt;span class=&quot;meta-string&quot;&gt;&amp;lt;windows.h&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;#&lt;span class=&quot;meta-keyword&quot;&gt;include&lt;/span&gt; &lt;span class=&quot;meta-string&quot;&gt;&amp;lt;dbghelp.h&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;#&lt;span class=&quot;meta-keyword&quot;&gt;pragma&lt;/span&gt; comment (lib, &lt;span class=&quot;string&quot;&gt;&quot;dbghelp.lib&quot;&lt;/span&gt;)&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;function&quot;&gt;LONG WINAPI &lt;span class=&quot;title&quot;&gt;MyUnhandledExceptionFilter&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(EXCEPTION_POINTERS *exceptionPointers)&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    HANDLE file = CreateFile(&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;string&quot;&gt;L&quot;FullDump.dmp&quot;&lt;/span&gt;, &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        GENERIC_READ | GENERIC_WRITE,&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;, &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        nullptr, &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        CREATE_ALWAYS, &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        FILE_ATTRIBUTE_NORMAL, &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        nullptr);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    MINIDUMP_EXCEPTION_INFORMATION miniDumpExceptionInfo = &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#123; &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        GetCurrentThreadId(), &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        exceptionPointers, &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        FALSE&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#125;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    MINIDUMP_TYPE mdt = &lt;span class=&quot;keyword&quot;&gt;static_cast&lt;/span&gt;&amp;lt;MINIDUMP_TYPE&amp;gt;(&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        MiniDumpWithFullMemory |&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        MiniDumpWithFullMemoryInfo |&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        MiniDumpWithHandleData |&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        MiniDumpWithThreadInfo |&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        MiniDumpWithUnloadedModules);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    MiniDumpWriteDump(&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        GetCurrentProcess(),&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        GetCurrentProcessId(),&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        file, mdt,&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        (exceptionPointers != nullptr) ? &amp;amp;miniDumpExceptionInfo : &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;literal&quot;&gt;nullptr&lt;/span&gt;,&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;literal&quot;&gt;nullptr&lt;/span&gt;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    CloseHandle(file);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    return EXCEPTION_EXECUTE_HANDLER;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;()&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    SetUnhandledExceptionFilter(MyUnhandledExceptionFilter);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    *&lt;span class=&quot;keyword&quot;&gt;static_cast&lt;/span&gt;&amp;lt;&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt;*&amp;gt;(&lt;span class=&quot;literal&quot;&gt;nullptr&lt;/span&gt;) = &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    return &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;从事故现场拿到这个”FullDump.dmp”文件后，挂到Visual Studio或者WinDbg中，就可以调试现场了，包括调用栈和全局变量、堆数据都可以访问。&lt;/p&gt;
+&lt;p&gt;上面的代码是在发现未处理异常的时候写MiniDump文件的，此时的选择只剩下结束进程。其实也可以选择在任何一个__except的filter表达式中创建MiniDump，然后在其对应的handler中访问这个文件，并且选择不退出、继续执行。&lt;/p&gt;
+&lt;p&gt;如果我们创建的MiniDump，是用来诊断异常现场的，那么，MiniDump所需要的MINIDUMP_EXCEPTION_INFORMATION，只能由SEH filter提供，即在__except的filter expression中调用GetExceptionInformation或者通过SetUnhandledExceptionFilter注册成filter之后接受传入的Callback参数。&lt;/p&gt;
+&lt;p&gt;如果你不需要异常现场，只是想诊断为什么进程的内存占用很大，或者检查线程的非正常状态，那么，也可以将这个异常信息指针置为空，来简单的创建进程状态的Snapshot：&lt;/p&gt;
+&lt;blockquote&gt;&lt;p&gt;ExceptionParam [in]&lt;br&gt;A pointer to a MINIDUMP_EXCEPTION_INFORMATION structure describing the client exception that caused the minidump to be generated. If the value of this parameter is NULL, no exception information is included in the minidump file.&lt;/p&gt;
+&lt;footer&gt;&lt;strong&gt;MSDN&lt;/strong&gt;&lt;cite&gt;&lt;a href=&quot;https://msdn.microsoft.com/en-us/library/windows/desktop/ms680360(v=vs.85).aspx&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;MiniDumpWriteDump Function&lt;/a&gt;&lt;/cite&gt;&lt;/footer&gt;&lt;/blockquote&gt;
+&lt;p&gt;上面的代码创建的是一个Full Dump，如果目标进程本身的&lt;a href=&quot;https://msdn.microsoft.com/en-us/library/windows/desktop/cc441804%28v=vs.85%29.aspx&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Working Set&lt;/a&gt;很大，那么Dump的时间和输出文件都会很大，影响服务器响应或者不容易分发。因此，你可以针对不同的目的，裁剪一些进程信息，创建更小的Dump文件。比如，一个只包括调用栈的Mini Dump可能已经足够你解决问题了。&lt;/p&gt;
+&lt;p&gt;这里(&lt;a href=&quot;http://www.debuginfo.com/articles/effminidumps.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;1&lt;/a&gt;, &lt;a href=&quot;http://www.debuginfo.com/articles/effminidumps2.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;2&lt;/a&gt;)是一些不错的讲这个主题的文章，然后&lt;a href=&quot;http://www.debuginfo.com/examples/effmdmpexamples.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;这里&lt;/a&gt;也给出了创建能用于不同场合的各种大小的Dump文件的例子：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://www.debuginfo.com/examples/src/effminidumps/TinyDump.cpp&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;TinyDump&lt;/a&gt;: shows how to create the smallest possible minidump (more information&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://www.debuginfo.com/examples/src/effminidumps/MiniDump.cpp&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;MiniDump&lt;/a&gt;: shows how to create a small but useful minidump (more information&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://www.debuginfo.com/examples/src/effminidumps/MidiDump.cpp&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;MidiDump&lt;/a&gt;: shows how to create a relatively large but very informative minidump&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://www.debuginfo.com/examples/src/effminidumps/MaxiDump.cpp&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;MaxiDump&lt;/a&gt;: shows how to create a minidump that contains all possible kinds of information&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;最后，MiniDumpWriteDump 函数其实也可以用来为其他进程创建Mini Dump，只不过要求一些内存、线程访问权限：&lt;/p&gt;
+&lt;blockquote&gt;&lt;p&gt;hProcess [in]&lt;br&gt;A handle to the process for which the information is to be generated.&lt;br&gt;This handle must have PROCESS_QUERY_INFORMATION and PROCESS_VM_READ access to the process. If handle information is to be collected then PROCESS_DUP_HANDLE access is also required. For more information, see Process Security and Access Rights. The caller must also be able to get THREAD_ALL_ACCESS access to the threads in the process. For more information, see Thread Security and Access Rights.&lt;/p&gt;
+&lt;footer&gt;&lt;strong&gt;MSDN&lt;/strong&gt;&lt;cite&gt;&lt;a href=&quot;https://msdn.microsoft.com/en-us/library/windows/desktop/ms680360(v=vs.85).aspx&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;MiniDumpWriteDump Function&lt;/a&gt;&lt;/cite&gt;&lt;/footer&gt;&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;p&gt;这个话题就讨论到这里，我们可以在我们的C++/.Net程序crash之前，搜集到足够的诊断信息，方便我们的调试了。&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;上一篇&lt;a href=&quot;http://blog.wbscan.com/2016/05/08/StructuredExceptionHandling/&quot;&gt;文章&lt;/a&gt;讨论了SEH，这里就基于它做点事儿。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="Error Handling" scheme="http://blog.wbscan.com/categories/Error-Handling/"/>
+    
+    
+      <category term="Windows" scheme="http://blog.wbscan.com/tags/Windows/"/>
+    
+      <category term="Exception" scheme="http://blog.wbscan.com/tags/Exception/"/>
+    
+      <category term="MiniDump" scheme="http://blog.wbscan.com/tags/MiniDump/"/>
+    
+      <category term="SEH" scheme="http://blog.wbscan.com/tags/SEH/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Windows中的结构化异常处理</title>
     <link href="http://blog.wbscan.com/2016/05/08/StructuredExceptionHandling/"/>
     <id>http://blog.wbscan.com/2016/05/08/StructuredExceptionHandling/</id>
     <published>2016-05-07T21:33:42.000Z</published>
-    <updated>2016-05-08T10:31:41.026Z</updated>
+    <updated>2016-05-08T12:02:44.978Z</updated>
     
     <content type="html">&lt;h3 id=&quot;背景&quot;&gt;&lt;a href=&quot;#背景&quot; class=&quot;headerlink&quot; title=&quot;背景&quot;&gt;&lt;/a&gt;背景&lt;/h3&gt;&lt;p&gt;上一次在 Windows 上用 C/C++ 做正经项目、需要做严格异常处理和调试的场合，已经是 5 年前了，那时我还在维护 PC 端游戏引擎。&lt;br&gt;&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;&lt;br&gt;在那以后，经历了移动开发到现在的 C# 开发，都不需要再跟 Windows 的结构化异常处理 (&lt;a href=&quot;https://zh.wikipedia.org/zh/%E7%BB%93%E6%9E%84%E5%8C%96%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;SEH&lt;/a&gt;) 打交道。&lt;br&gt;虽说用不上，但看技术文档总有可能碰上，正好最近就有这样的场合，显然我已经把 &lt;a href=&quot;https://book.douban.com/subject/3235659/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;《Windows核心编程》&lt;/a&gt; 里的细节给忘光光了，只能重新学习下。&lt;/p&gt;
+&lt;hr&gt;
 &lt;h3 id=&quot;SEH的概念&quot;&gt;&lt;a href=&quot;#SEH的概念&quot; class=&quot;headerlink&quot; title=&quot;SEH的概念&quot;&gt;&lt;/a&gt;SEH的概念&lt;/h3&gt;&lt;p&gt;把 MSDN 上的&lt;a href=&quot;https://msdn.microsoft.com/en-us/library/windows/desktop/ms680657%28v=vs.85%29.aspx&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;文档&lt;/a&gt; 读了过后，发现最有价值的，还是&lt;a href=&quot;https://msdn.microsoft.com/en-us/library/windows/desktop/ms679270%28v=vs.85%29.aspx&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;这里&lt;/a&gt;。&lt;/p&gt;
 &lt;p&gt;首先，Windows 的 SEH 整个脉络是这样的：&lt;/p&gt;
 &lt;ul&gt;
@@ -91,6 +143,7 @@
 &lt;li&gt;C++ 的异常处理可能不是通过 SEH 实现，于是结构化异常抛出时，类析构函数不会被调用。&lt;/li&gt;
 &lt;li&gt;特定于 Windows 平台。&lt;/li&gt;
 &lt;/ul&gt;
+&lt;hr&gt;
 &lt;h3 id=&quot;结语&quot;&gt;&lt;a href=&quot;#结语&quot; class=&quot;headerlink&quot; title=&quot;结语&quot;&gt;&lt;/a&gt;结语&lt;/h3&gt;&lt;p&gt;这是一篇即使放到10年前都不算新的文章，写它，更算是把我学习的结果记下来，以及刻意的丰富下博客内容吧。&lt;/p&gt;
 &lt;p&gt;就这篇文章讨论的这个话题而言，还是再推荐下 &lt;a href=&quot;https://book.douban.com/subject/3235659/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Windows核心编程&lt;/a&gt; 。尽管这次我没看这本书，但 Jeffrey 的书总是深入浅出、鞭辟入里。我认为进入一个新领域时，如果正好有他的书，那一定是从入门到进阶的好机会。比如，学习 .Net 就推荐他的 &lt;a href=&quot;https://book.douban.com/subject/4112979/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;CLR via C#&lt;/a&gt;。&lt;/p&gt;
 </content>
@@ -119,9 +172,11 @@
     <link href="http://blog.wbscan.com/2016/05/08/HowToSetupTheHexoBasedBlog/"/>
     <id>http://blog.wbscan.com/2016/05/08/HowToSetupTheHexoBasedBlog/</id>
     <published>2016-05-07T20:15:18.000Z</published>
-    <updated>2016-05-08T10:25:45.038Z</updated>
+    <updated>2016-05-08T12:04:26.486Z</updated>
     
-    <content type="html">&lt;p&gt;我想自己搭博客很久了，之前是不会 Web，等到终于会做网站的时候，已经嫌麻烦不太想弄了，所以转而寻求现成的博客生成、托管方案。&lt;br&gt;&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;&lt;br&gt;考虑到，博客托管和文章备份一定要靠谱，一番考察，还是 &lt;a href=&quot;https://pages.github.com/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;GitHub Pages&lt;/a&gt; 最省事；而基于 GitHub Pages 的静态网站方案中，对比&lt;a href=&quot;https://jekyllrb.com/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Jekyll&lt;/a&gt; 和 &lt;a href=&quot;https://hexo.io/docs/writing.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Hexo&lt;/a&gt; ，后者诞生得晚、活跃的主题/插件多，安装和部署都更简单。在 Hexo 主题中，&lt;a href=&quot;http://theme-next.iissnan.com/tag-plugins.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;NexT&lt;/a&gt; (&lt;a href=&quot;http://notes.iissnan.com/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Demo&lt;/a&gt;)又比绝大部分竞争对手更成熟，于是最终方案就是 GitHub Pages + Hexo + NexT. &lt;/p&gt;
+    <content type="html">&lt;p&gt;我想自己搭博客很久了，之前是不会 Web，等到终于会做网站的时候，已经嫌麻烦不太想弄了，所以转而寻求现成的博客生成、托管方案。&lt;br&gt;&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;博客托管和文章备份一定要靠谱，一番考察过后，还是 &lt;a href=&quot;https://pages.github.com/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;GitHub Pages&lt;/a&gt; 最省事；而基于 GitHub Pages 的静态网站方案中，对比&lt;a href=&quot;https://jekyllrb.com/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Jekyll&lt;/a&gt; 和 &lt;a href=&quot;https://hexo.io/docs/writing.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Hexo&lt;/a&gt; ，后者诞生得晚、活跃的主题/插件多，安装和部署都更简单。在 Hexo 主题中，&lt;a href=&quot;http://theme-next.iissnan.com/tag-plugins.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;NexT&lt;/a&gt; (&lt;a href=&quot;http://notes.iissnan.com/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Demo&lt;/a&gt;)又比绝大部分竞争对手更成熟，于是最终方案就是 GitHub Pages + Hexo + NexT. &lt;/p&gt;
 &lt;p&gt;在考察各种教程和主题后，这是我的实施过程：&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;先看&lt;a href=&quot;https://pages.github.com/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;GitHub Pages&lt;/a&gt;文档，用它托管一个只包含 index.html 的静态网站。成功后，你能通过&lt;code&gt;http://username.github.io&lt;/code&gt;访问这个静态博客。&lt;/li&gt;
@@ -134,7 +189,8 @@
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;至此全部完工，以后想添加新文章，在 Hexo 的模板 Repo 里&lt;code&gt;hexo new &amp;quot;post_name&amp;quot;&lt;/code&gt;，再运行&lt;code&gt;hexo generate&lt;/code&gt;，最后 push 到&lt;code&gt;https://github.com/username/username.github.io&lt;/code&gt; ，一篇新的博文就发布了。&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;这就是全部了，以后想添加新文章，在 Hexo 的模板 Repo 里&lt;code&gt;hexo new &amp;quot;post_name&amp;quot;&lt;/code&gt;，再运行&lt;code&gt;hexo generate&lt;/code&gt;，最后 push 到&lt;code&gt;https://github.com/username/username.github.io&lt;/code&gt; ，一篇新的博文就发布了。&lt;/p&gt;
 </content>
     
     <summary type="html">

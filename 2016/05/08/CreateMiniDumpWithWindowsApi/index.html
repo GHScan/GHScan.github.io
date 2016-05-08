@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="Windows,Exception,MiniDump,SEH," />
 
 
 
@@ -86,15 +86,16 @@
 
 
 
-<meta name="description" content="致力于成为一台优秀的编码机器">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Scan的博客">
-<meta property="og:url" content="http://blog.wbscan.com/index.html">
+<meta name="description" content="上一篇文章讨论了SEH，这里就基于它做点事儿。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用MiniDumpWriteDump来创建MiniDump">
+<meta property="og:url" content="http://blog.wbscan.com/2016/05/08/CreateMiniDumpWithWindowsApi/index.html">
 <meta property="og:site_name" content="Scan的博客">
-<meta property="og:description" content="致力于成为一台优秀的编码机器">
+<meta property="og:description" content="上一篇文章讨论了SEH，这里就基于它做点事儿。">
+<meta property="og:updated_time" content="2016-05-08T12:07:43.827Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Scan的博客">
-<meta name="twitter:description" content="致力于成为一台优秀的编码机器">
+<meta name="twitter:title" content="用MiniDumpWriteDump来创建MiniDump">
+<meta name="twitter:description" content="上一篇文章讨论了SEH，这里就基于它做点事儿。">
 
 
 
@@ -112,7 +113,7 @@
   };
 </script>
 
-  <title> Scan的博客 </title>
+  <title> 用MiniDumpWriteDump来创建MiniDump | Scan的博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -142,9 +143,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left 
-   page-home 
- ">
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -241,9 +240,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
   
@@ -263,10 +262,7 @@
             
             
               
-                
-                <a class="post-title-link" href="/2016/05/08/CreateMiniDumpWithWindowsApi/" itemprop="url">
-                  用MiniDumpWriteDump来创建MiniDump
-                </a>
+                用MiniDumpWriteDump来创建MiniDump
               
             
           </h1>
@@ -332,286 +328,88 @@
       
 
       
-        
-          <p>上一篇<a href="http://blog.wbscan.com/2016/05/08/StructuredExceptionHandling/">文章</a>讨论了SEH，这里就基于它做点事儿。<br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2016/05/08/CreateMiniDumpWithWindowsApi/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
+        <p>上一篇<a href="http://blog.wbscan.com/2016/05/08/StructuredExceptionHandling/">文章</a>讨论了SEH，这里就基于它做点事儿。<br><a id="more"></a></p>
+<hr>
+<p>任务很简单，就是在发现一个未处理异常时，使用<a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms680360%28v=vs.85%29.aspx" target="_blank" rel="external">MiniDumpWriteDump</a>创建一个Full Dump文件，从而允许之后的异常调试：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;dbghelp.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> comment (lib, <span class="string">"dbghelp.lib"</span>)</span></span><br><span class="line"></span><br><span class="line"><span class="function">LONG WINAPI <span class="title">MyUnhandledExceptionFilter</span><span class="params">(EXCEPTION_POINTERS *exceptionPointers)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    HANDLE file = CreateFile(</span><br><span class="line">        <span class="string">L"FullDump.dmp"</span>, </span><br><span class="line">        GENERIC_READ | GENERIC_WRITE,</span><br><span class="line">        <span class="number">0</span>, </span><br><span class="line">        nullptr, </span><br><span class="line">        CREATE_ALWAYS, </span><br><span class="line">        FILE_ATTRIBUTE_NORMAL, </span><br><span class="line">        nullptr);</span><br><span class="line"></span><br><span class="line">    MINIDUMP_EXCEPTION_INFORMATION miniDumpExceptionInfo = </span><br><span class="line">    &#123; </span><br><span class="line">        GetCurrentThreadId(), </span><br><span class="line">        exceptionPointers, </span><br><span class="line">        FALSE</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    MINIDUMP_TYPE mdt = <span class="keyword">static_cast</span>&lt;MINIDUMP_TYPE&gt;(</span><br><span class="line">        MiniDumpWithFullMemory |</span><br><span class="line">        MiniDumpWithFullMemoryInfo |</span><br><span class="line">        MiniDumpWithHandleData |</span><br><span class="line">        MiniDumpWithThreadInfo |</span><br><span class="line">        MiniDumpWithUnloadedModules);</span><br><span class="line"></span><br><span class="line">    MiniDumpWriteDump(</span><br><span class="line">        GetCurrentProcess(),</span><br><span class="line">        GetCurrentProcessId(),</span><br><span class="line">        file, mdt,</span><br><span class="line">        (exceptionPointers != nullptr) ? &amp;miniDumpExceptionInfo : <span class="number">0</span>,</span><br><span class="line">        <span class="literal">nullptr</span>,</span><br><span class="line">        <span class="literal">nullptr</span>);</span><br><span class="line"></span><br><span class="line">    CloseHandle(file);</span><br><span class="line"></span><br><span class="line">    return EXCEPTION_EXECUTE_HANDLER;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    SetUnhandledExceptionFilter(MyUnhandledExceptionFilter);</span><br><span class="line"></span><br><span class="line">    *<span class="keyword">static_cast</span>&lt;<span class="keyword">int</span>*&gt;(<span class="literal">nullptr</span>) = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    return <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从事故现场拿到这个”FullDump.dmp”文件后，挂到Visual Studio或者WinDbg中，就可以调试现场了，包括调用栈和全局变量、堆数据都可以访问。</p>
+<p>上面的代码是在发现未处理异常的时候写MiniDump文件的，此时的选择只剩下结束进程。其实也可以选择在任何一个__except的filter表达式中创建MiniDump，然后在其对应的handler中访问这个文件，并且选择不退出、继续执行。</p>
+<p>如果我们创建的MiniDump，是用来诊断异常现场的，那么，MiniDump所需要的MINIDUMP_EXCEPTION_INFORMATION，只能由SEH filter提供，即在__except的filter expression中调用GetExceptionInformation或者通过SetUnhandledExceptionFilter注册成filter之后接受传入的Callback参数。</p>
+<p>如果你不需要异常现场，只是想诊断为什么进程的内存占用很大，或者检查线程的非正常状态，那么，也可以将这个异常信息指针置为空，来简单的创建进程状态的Snapshot：</p>
+<blockquote><p>ExceptionParam [in]<br>A pointer to a MINIDUMP_EXCEPTION_INFORMATION structure describing the client exception that caused the minidump to be generated. If the value of this parameter is NULL, no exception information is included in the minidump file.</p>
+<footer><strong>MSDN</strong><cite><a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms680360(v=vs.85).aspx" target="_blank" rel="external">MiniDumpWriteDump Function</a></cite></footer></blockquote>
+<p>上面的代码创建的是一个Full Dump，如果目标进程本身的<a href="https://msdn.microsoft.com/en-us/library/windows/desktop/cc441804%28v=vs.85%29.aspx" target="_blank" rel="external">Working Set</a>很大，那么Dump的时间和输出文件都会很大，影响服务器响应或者不容易分发。因此，你可以针对不同的目的，裁剪一些进程信息，创建更小的Dump文件。比如，一个只包括调用栈的Mini Dump可能已经足够你解决问题了。</p>
+<p>这里(<a href="http://www.debuginfo.com/articles/effminidumps.html" target="_blank" rel="external">1</a>, <a href="http://www.debuginfo.com/articles/effminidumps2.html" target="_blank" rel="external">2</a>)是一些不错的讲这个主题的文章，然后<a href="http://www.debuginfo.com/examples/effmdmpexamples.html" target="_blank" rel="external">这里</a>也给出了创建能用于不同场合的各种大小的Dump文件的例子：</p>
+<ul>
+<li><a href="http://www.debuginfo.com/examples/src/effminidumps/TinyDump.cpp" target="_blank" rel="external">TinyDump</a>: shows how to create the smallest possible minidump (more information</li>
+<li><a href="http://www.debuginfo.com/examples/src/effminidumps/MiniDump.cpp" target="_blank" rel="external">MiniDump</a>: shows how to create a small but useful minidump (more information</li>
+<li><a href="http://www.debuginfo.com/examples/src/effminidumps/MidiDump.cpp" target="_blank" rel="external">MidiDump</a>: shows how to create a relatively large but very informative minidump</li>
+<li><a href="http://www.debuginfo.com/examples/src/effminidumps/MaxiDump.cpp" target="_blank" rel="external">MaxiDump</a>: shows how to create a minidump that contains all possible kinds of information</li>
+</ul>
+<p>最后，MiniDumpWriteDump 函数其实也可以用来为其他进程创建Mini Dump，只不过要求一些内存、线程访问权限：</p>
+<blockquote><p>hProcess [in]<br>A handle to the process for which the information is to be generated.<br>This handle must have PROCESS_QUERY_INFORMATION and PROCESS_VM_READ access to the process. If handle information is to be collected then PROCESS_DUP_HANDLE access is also required. For more information, see Process Security and Access Rights. The caller must also be able to get THREAD_ALL_ACCESS access to the threads in the process. For more information, see Thread Security and Access Rights.</p>
+<footer><strong>MSDN</strong><cite><a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms680360(v=vs.85).aspx" target="_blank" rel="external">MiniDumpWriteDump Function</a></cite></footer></blockquote>
+<hr>
+<p>这个话题就讨论到这里，我们可以在我们的C++/.Net程序crash之前，搜集到足够的诊断信息，方便我们的调试了。</p>
+
+      
+    </div>
+
+    <div>
+      
         
       
     </div>
 
     <div>
       
-    </div>
+        
 
-    <div>
       
     </div>
 
     <footer class="post-footer">
       
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/05/08/StructuredExceptionHandling/" itemprop="url">
-                  Windows中的结构化异常处理
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-05-08T05:33:42+08:00" content="2016-05-08">
-              2016-05-08
-            </time>
-          </span>
-
+        <div class="post-tags">
           
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Error-Handling/" itemprop="url" rel="index">
-                    <span itemprop="name">Error Handling</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
+            <a href="/tags/Windows/" rel="tag">#Windows</a>
           
-
+            <a href="/tags/Exception/" rel="tag">#Exception</a>
           
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/05/08/StructuredExceptionHandling/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/05/08/StructuredExceptionHandling/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
+            <a href="/tags/MiniDump/" rel="tag">#MiniDump</a>
           
-
-          
-
-          
-          
-
+            <a href="/tags/SEH/" rel="tag">#SEH</a>
           
         </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
-        
-          <h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>上一次在 Windows 上用 C/C++ 做正经项目、需要做严格异常处理和调试的场合，已经是 5 年前了，那时我还在维护 PC 端游戏引擎。<br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2016/05/08/StructuredExceptionHandling/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/05/08/StructuredExceptionHandling/" rel="next" title="Windows中的结构化异常处理">
+                <i class="fa fa-chevron-left"></i> Windows中的结构化异常处理
+              </a>
+            
           </div>
-        
-      
-    </div>
 
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
+          <div class="post-nav-prev post-nav-item">
             
-            
-              
-                
-                <a class="post-title-link" href="/2016/05/08/HowToSetupTheHexoBasedBlog/" itemprop="url">
-                  怎么用GithubPages+Hexo+NexT搭建博客
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-05-08T04:15:18+08:00" content="2016-05-08">
-              2016-05-08
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Engineering/" itemprop="url" rel="index">
-                    <span itemprop="name">Engineering</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/05/08/HowToSetupTheHexoBasedBlog/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/05/08/HowToSetupTheHexoBasedBlog/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
-          
+          </div>
         </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
-        
-          <p>我想自己搭博客很久了，之前是不会 Web，等到终于会做网站的时候，已经嫌麻烦不太想弄了，所以转而寻求现成的博客生成、托管方案。<br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2016/05/08/HowToSetupTheHexoBasedBlog/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </article>
 
 
-    
-  </section>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -619,6 +417,17 @@
 
 
           
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
 
         </div>
         
@@ -638,8 +447,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+      <section class="site-overview sidebar-panel ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.jpg"
@@ -756,6 +574,17 @@
       </section>
 
       
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <p class="post-toc-empty">此文章未包含目录</p>
+            
+          </div>
+        </section>
+      
 
     </div>
   </aside>
@@ -858,6 +687,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
 
   
 
@@ -874,9 +707,9 @@
 
     <script type="text/javascript">
       var disqus_shortname = 'blogwbscancom';
-      var disqus_identifier = 'index.html';
-      var disqus_title = '';
-      var disqus_url = '';
+      var disqus_identifier = '2016/05/08/CreateMiniDumpWithWindowsApi/';
+      var disqus_title = '用MiniDumpWriteDump来创建MiniDump';
+      var disqus_url = 'http://blog.wbscan.com/2016/05/08/CreateMiniDumpWithWindowsApi/';
 
       function run_disqus_script(disqus_script){
         var dsq = document.createElement('script');
@@ -887,6 +720,8 @@
       }
 
       run_disqus_script('count.js');
+      
+        run_disqus_script('embed.js');
       
     </script>
   
