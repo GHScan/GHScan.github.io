@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.wbscan.com/"/>
-  <updated>2016-05-08T15:23:17.725Z</updated>
+  <updated>2016-05-11T13:37:36.049Z</updated>
   <id>http://blog.wbscan.com/</id>
   
   <author>
@@ -16,11 +16,11 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>怎样在.Net中查找特定对象的所有根路径</title>
+    <title>在.Net中查找对象的根路径</title>
     <link href="http://blog.wbscan.com/2016/05/08/HowToFigureOutTheRootPathsOfDotNetObject/"/>
     <id>http://blog.wbscan.com/2016/05/08/HowToFigureOutTheRootPathsOfDotNetObject/</id>
     <published>2016-05-08T13:34:24.000Z</published>
-    <updated>2016-05-08T15:23:17.725Z</updated>
+    <updated>2016-05-11T13:37:36.049Z</updated>
     
     <content type="html">&lt;h3 id=&quot;背景&quot;&gt;&lt;a href=&quot;#背景&quot; class=&quot;headerlink&quot; title=&quot;背景&quot;&gt;&lt;/a&gt;背景&lt;/h3&gt;&lt;p&gt;&lt;a href=&quot;http://blog.wbscan.com/2016/05/08/HowToCatpureAndUseMiniDump/&quot;&gt;上文&lt;/a&gt; 提到，Vistual Studio能够在加载了MiniDump文件后，查找特定对象在GC系统中的所有根路径 (关于GC和Root Set的概念，参见&lt;a href=&quot;https://en.wikipedia.org/wiki/Tracing_garbage_collection&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Tracing GC&lt;/a&gt;)。这是非常强大的功能，而第一次注意到调试工具具备这个能力，是上次我在使用&lt;a href=&quot;https://www.jetbrains.com/help/dotmemory/10.0/Analyzing_GC_Roots.html?origin=old_help&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;dotMemory&lt;/a&gt;的时候。&lt;br&gt;&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;&lt;br&gt;幸运的是，没过多久，我在自己用到的开源库中，也发现了演示这个功能的&lt;a href=&quot;https://github.com/Microsoft/dotnetsamples/tree/master/Microsoft.Diagnostics.Runtime/CLRMD/GCRoot&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Demo&lt;/a&gt;。&lt;/p&gt;
 &lt;hr&gt;
@@ -79,11 +79,11 @@
   </entry>
   
   <entry>
-    <title>MiniDump文件的多种创建和使用方法</title>
+    <title>MiniDump的创建和使用</title>
     <link href="http://blog.wbscan.com/2016/05/08/HowToCatpureAndUseMiniDump/"/>
     <id>http://blog.wbscan.com/2016/05/08/HowToCatpureAndUseMiniDump/</id>
     <published>2016-05-08T12:16:10.000Z</published>
-    <updated>2016-05-08T13:17:45.703Z</updated>
+    <updated>2016-05-11T13:37:11.680Z</updated>
     
     <content type="html">&lt;p&gt;前面两篇文章(&lt;a href=&quot;http://blog.wbscan.com/2016/05/08/StructuredExceptionHandling/&quot;&gt;1&lt;/a&gt;, &lt;a href=&quot;http://blog.wbscan.com/2016/05/08/CreateMiniDumpWithWindowsApi/&quot;&gt;2&lt;/a&gt;)从编程角度讲了Windows异常处理机制和用API创建MinDump文件，这里再来讲一些其他创建MiniDump的方式，以及MiniDump文件的基本使用。&lt;br&gt;&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;hr&gt;
@@ -140,11 +140,11 @@
   </entry>
   
   <entry>
-    <title>用MiniDumpWriteDump来创建MiniDump</title>
+    <title>使用MiniDumpWriteDump</title>
     <link href="http://blog.wbscan.com/2016/05/08/CreateMiniDumpWithWindowsApi/"/>
     <id>http://blog.wbscan.com/2016/05/08/CreateMiniDumpWithWindowsApi/</id>
     <published>2016-05-08T10:59:44.000Z</published>
-    <updated>2016-05-08T12:07:43.827Z</updated>
+    <updated>2016-05-11T13:36:50.311Z</updated>
     
     <content type="html">&lt;p&gt;上一篇&lt;a href=&quot;http://blog.wbscan.com/2016/05/08/StructuredExceptionHandling/&quot;&gt;文章&lt;/a&gt;讨论了SEH，这里就基于它做点事儿。&lt;br&gt;&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;hr&gt;
@@ -292,11 +292,11 @@
   </entry>
   
   <entry>
-    <title>怎么用GithubPages+Hexo+NexT搭建博客</title>
+    <title>用GithubPages+Hexo+NexT搭建博客</title>
     <link href="http://blog.wbscan.com/2016/05/08/HowToSetupTheHexoBasedBlog/"/>
     <id>http://blog.wbscan.com/2016/05/08/HowToSetupTheHexoBasedBlog/</id>
     <published>2016-05-07T20:15:18.000Z</published>
-    <updated>2016-05-08T13:18:49.022Z</updated>
+    <updated>2016-05-11T13:36:09.363Z</updated>
     
     <content type="html">&lt;p&gt;我想自己搭博客很久了，之前是不会 Web，等到终于会做网站的时候，已经嫌麻烦不太想弄了，所以转而寻求现成的博客生成、托管方案。&lt;br&gt;&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;hr&gt;
